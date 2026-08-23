@@ -1,0 +1,949 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Automotive Skill UI</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0f14;
+      --panel: #171b22;
+      --panel-2: #202632;
+      --panel-3: #12161d;
+      --line: #303846;
+      --line-soft: #252c38;
+      --text: #e8edf5;
+      --muted: #9da8ba;
+      --blue: #2f80ed;
+      --blue-2: #1f6fda;
+      --green: #26a269;
+      --red: #e25555;
+      --yellow: #d6a640;
+      --field: #0f141b;
+      --field-focus: #3d7dd8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .topbar {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 16px;
+      background: #11161d;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: var(--blue);
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .top-meta {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(330px, 390px) minmax(0, 1fr);
+      gap: 10px;
+      padding: 10px;
+      min-height: 0;
+    }
+
+    .panel {
+      min-width: 0;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .controls {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .group {
+      background: var(--panel-3);
+      border: 1px solid var(--line-soft);
+      border-radius: 6px;
+      padding: 10px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .group-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .field {
+      display: grid;
+      gap: 5px;
+    }
+
+    label,
+    .label {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    select,
+    textarea {
+      width: 100%;
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: var(--text);
+      background: var(--field);
+      padding: 7px 8px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 76px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--field-focus);
+      box-shadow: 0 0 0 1px rgba(61, 125, 216, 0.35);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .radio-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 34px;
+      padding: 7px 8px;
+      border-radius: 4px;
+      background: var(--field);
+      border: 1px solid var(--line);
+      cursor: pointer;
+      color: var(--text);
+      font-size: 12px;
+    }
+
+    .radio-card input {
+      accent-color: var(--blue);
+    }
+
+    .brand-only {
+      display: none;
+    }
+
+    .brand-only.active {
+      display: grid;
+      gap: 10px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .style-preview {
+      display: grid;
+      grid-template-columns: 76px minmax(0, 1fr);
+      gap: 9px;
+      align-items: center;
+      min-height: 88px;
+      padding: 8px;
+      border: 1px solid var(--line-soft);
+      border-radius: 5px;
+      background: var(--panel-2);
+    }
+
+    .style-preview img {
+      width: 76px;
+      aspect-ratio: 4 / 5;
+      object-fit: cover;
+      border-radius: 4px;
+      background: #0a0d12;
+    }
+
+    .style-name {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .missing {
+      display: none;
+      padding: 8px;
+      border-radius: 4px;
+      color: #f4d99a;
+      background: rgba(214, 166, 64, 0.12);
+      border: 1px solid rgba(214, 166, 64, 0.24);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .missing.active {
+      display: block;
+    }
+
+    .missing ul {
+      margin: 4px 0 0;
+      padding-left: 18px;
+    }
+
+    .primary {
+      min-height: 42px;
+      border: 0;
+      border-radius: 5px;
+      color: white;
+      background: var(--blue);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .primary:hover {
+      background: var(--blue-2);
+    }
+
+    .primary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .secondary {
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: var(--text);
+      background: var(--panel-2);
+      cursor: pointer;
+    }
+
+    .secondary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .output {
+      display: grid;
+      grid-template-rows: auto minmax(420px, 1fr) auto;
+      min-height: calc(100vh - 70px);
+    }
+
+    .tabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      height: 42px;
+      padding: 0 10px;
+      border-bottom: 1px solid var(--line);
+      background: #11161d;
+    }
+
+    .tab {
+      height: 30px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: var(--text);
+      background: var(--panel-2);
+      cursor: pointer;
+    }
+
+    .tab.active {
+      border-color: var(--blue);
+      background: rgba(47, 128, 237, 0.22);
+    }
+
+    .preview {
+      display: grid;
+      place-items: center;
+      padding: 14px;
+      background:
+        linear-gradient(45deg, rgba(255, 255, 255, 0.025) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255, 255, 255, 0.025) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.025) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.025) 75%),
+        #0c1016;
+      background-size: 24px 24px;
+      background-position: 0 0, 0 12px, 12px -12px, -12px 0;
+    }
+
+    .placeholder,
+    .result-image {
+      width: var(--preview-width, min(430px, 92%));
+      max-width: 92%;
+      max-height: calc(100vh - 230px);
+      aspect-ratio: var(--preview-aspect, 9 / 16);
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+    }
+
+    .placeholder {
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      text-align: center;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .progress-state {
+      width: min(330px, 86%);
+      display: grid;
+      gap: 10px;
+      justify-items: stretch;
+    }
+
+    .progress-title {
+      color: var(--text);
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .progress-text {
+      min-height: 20px;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .progress-track {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #0b1017;
+      border: 1px solid var(--line-soft);
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #2f80ed, #20a88a);
+      transition: width 500ms ease;
+    }
+
+    .result-image {
+      display: none;
+      object-fit: contain;
+      background: #05070a;
+    }
+
+    .result-image.active {
+      display: block;
+    }
+
+    .placeholder.hidden {
+      display: none;
+    }
+
+    .bottom {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border-top: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .status-line {
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .prompt-frame {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 150px;
+      gap: 10px;
+      align-items: stretch;
+      min-width: 0;
+    }
+
+    .prompt-box {
+      margin: 0;
+      width: 100%;
+      height: 92px;
+      min-height: 92px;
+      color: var(--muted);
+      background: #0c1117;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 8px;
+      white-space: pre-wrap;
+      overflow: auto;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 12px;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 8px;
+      width: 150px;
+      height: 92px;
+    }
+
+    .actions button {
+      min-height: 0;
+      height: 100%;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .output {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .topbar,
+      .prompt-frame {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+
+      .row,
+      .segmented {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">A</div>
+        <h1>Automotive Skill UI</h1>
+      </div>
+      <div class="top-meta">local bridge · automotive-marketing-materials</div>
+    </header>
+
+    <main class="layout">
+      <aside class="panel controls">
+        <section class="group">
+          <div class="group-title">基础参数</div>
+          <div class="row">
+            <div class="field">
+              <label for="brand">品牌</label>
+              <select id="brand">
+                <option value="wuling">五菱</option>
+                <option value="volkswagen-anhui">安徽大众</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="assetType">物料类型</label>
+              <select id="assetType">
+                <option value="poster-cover">海报 / 封面</option>
+                <option value="banner">Banner</option>
+                <option value="carousel">轮播图</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="platform">平台</label>
+              <select id="platform">
+                <option value="douyin">抖音</option>
+                <option value="xiaohongshu">小红书</option>
+                <option value="weibo">微博</option>
+                <option value="wechat">公众号</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="placement">版位 / 尺寸</label>
+              <select id="placement">
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="group">
+          <div class="group-title">车型与素材</div>
+          <div class="field">
+            <label for="vehicle">车型 / 颜色 / 角度</label>
+            <input id="vehicle" type="text" placeholder="例如：车型名称，车身颜色，拍摄角度或画面姿态" />
+          </div>
+          <div class="field">
+            <span class="label">车型图来源</span>
+            <div class="segmented">
+              <label class="radio-card"><input type="radio" name="imageSource" value="official" checked /> AI 官网找图</label>
+              <label class="radio-card"><input type="radio" name="imageSource" value="local" /> 本地上传</label>
+            </div>
+          </div>
+          <div id="uploadWrap" class="field" hidden>
+            <label for="vehicleImage">上传车型素材</label>
+            <input id="vehicleImage" type="file" accept="image/*" />
+          </div>
+          <div class="field">
+            <label for="sceneElements">画面元素 / 场景补充</label>
+            <textarea id="sceneElements" placeholder="例如：城市天际线、家庭出行、山路露营、节日氛围"></textarea>
+          </div>
+        </section>
+
+        <section class="group">
+          <div class="group-title">品牌规则</div>
+          <div id="wulingPanel" class="brand-only active">
+            <div class="field">
+              <span class="label">五菱 Logo 形式</span>
+              <div class="segmented">
+                <label class="radio-card"><input type="radio" name="logoOption" value="A" /> A 左上横排</label>
+                <label class="radio-card"><input type="radio" name="logoOption" value="B" checked /> B 顶部居中</label>
+              </div>
+            </div>
+            <div class="field">
+              <label for="wulingStyle">五菱视觉风格</label>
+              <select id="wulingStyle">
+                <option value="8 高端实力大片">8 高端实力大片</option>
+                <option value="1 时装极简棚拍">1 时装极简棚拍</option>
+                <option value="2 街头手写趣玩">2 街头手写趣玩</option>
+                <option value="3 梦幻流体色卡">3 梦幻流体色卡</option>
+                <option value="4 复古明星影棚">4 复古明星影棚</option>
+                <option value="5 旅行打卡手账">5 旅行打卡手账</option>
+                <option value="6 多巴胺强促销">6 多巴胺强促销</option>
+                <option value="7 户外潮酷纪实">7 户外潮酷纪实</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="vwPanel" class="brand-only">
+            <div class="field">
+              <label for="dssoContentType">DSSO 内容类型</label>
+              <select id="dssoContentType">
+                <option value="product">产品证明 / 实力展示</option>
+                <option value="qa">问答 / 知识科普</option>
+                <option value="offer">权益 / 价格 / 促销</option>
+                <option value="feature">功能痛点 / 配置说明</option>
+                <option value="recruitment">招募 / 试驾 / 体验活动</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="style-preview">
+            <img id="styleImage" src="assets/wuling/style-08.jpg" alt="风格图例" />
+            <div>
+              <div id="styleName" class="style-name">8 高端实力大片</div>
+              <div id="styleDesc" class="hint">适合突出车辆体量、质感和高价值表达。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="group">
+          <div class="group-title">画面文案</div>
+          <div class="field">
+            <label for="copy">完整画面文案</label>
+            <textarea id="copy" placeholder="例如：大标题“xxx” 小标题“xxx” 其它“xxx”"></textarea>
+          </div>
+          <div id="missing" class="missing"></div>
+          <button id="submit" class="primary" type="button">开始生成</button>
+        </section>
+      </aside>
+
+      <section class="panel output">
+        <div class="tabs">
+          <button class="tab active" type="button">图片预览</button>
+        </div>
+        <div id="preview" class="preview">
+          <div id="placeholder" class="placeholder">
+            <div class="progress-state">
+              <div id="progressTitle" class="progress-title">等待生成图片</div>
+              <div id="progressText" class="progress-text">提交任务后，生成结果会显示在这里。</div>
+              <div class="progress-track" aria-hidden="true">
+                <div id="progressFill" class="progress-fill"></div>
+              </div>
+            </div>
+          </div>
+          <img id="resultImage" class="result-image" alt="生成结果" />
+        </div>
+        <div class="bottom">
+          <div id="statusLine" class="status-line">尚未创建任务。</div>
+          <div class="prompt-frame">
+            <pre id="promptBox" class="prompt-box">任务 prompt 会在提交后显示。</pre>
+            <div class="actions">
+              <button id="copyPrompt" class="secondary" type="button" disabled>复制 Prompt</button>
+              <button id="download" class="primary" type="button" disabled>下载图片</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const state = {
+      jobId: null,
+      imageUrl: null,
+      pollTimer: null,
+      startedAt: null
+    };
+
+    const dssoRoutes = {
+      product: ["1 暮金产品纪实", "适合车型亮相、空间/续航/性能实测、产品力总结。", "assets/vw/dsso-01.jpg"],
+      qa: ["2 先锋问答杂志", "适合问答、知识栏目、技术解析、人物访谈。", "assets/vw/dsso-02.jpg"],
+      offer: ["3 金标权益清单", "适合价格、限时权益、多配置对照、购车季。", "assets/vw/dsso-03.jpg"],
+      feature: ["4 功能痛点导视", "适合功能教学、驾驶辅助、泊车能力。", "assets/vw/dsso-04.jpg"],
+      recruitment: ["5 户外体验招募", "适合体验官、车主活动、试驾或用户招募。", "assets/vw/dsso-05.jpg"]
+    };
+
+    const wulingStyles = {
+      "1 时装极简棚拍": ["高级白棚、克制留白与时装杂志感。", "assets/wuling/style-01.jpg"],
+      "2 街头手写趣玩": ["年轻街区、手写涂鸦和轻松互动感。", "assets/wuling/style-02.jpg"],
+      "3 梦幻流体色卡": ["适合突出配色、设计细节和轻未来感。", "assets/wuling/style-03.jpg"],
+      "4 复古明星影棚": ["柔光棚拍、生活方式和复古影像语气。", "assets/wuling/style-04.jpg"],
+      "5 旅行打卡手账": ["适合亲子出游、周末旅行与打卡主题。", "assets/wuling/style-05.jpg"],
+      "6 多巴胺强促销": ["适合活动、权益、限时信息的强曝光。", "assets/wuling/style-06.jpg"],
+      "7 户外潮酷纪实": ["适合户外生活方式与实用场景表达。", "assets/wuling/style-07.jpg"],
+      "8 高端实力大片": ["适合突出车辆体量、质感和高价值表达。", "assets/wuling/style-08.jpg"]
+    };
+
+    const placementRoutes = {
+      douyin: [
+        ["douyin-video-cover-portrait-1080x1920", "视频封面·竖版｜1080 × 1920｜9:16"],
+        ["douyin-video-cover-landscape-1080x608", "视频封面·横版｜1080 × 608｜16:9"],
+        ["douyin-live-cover-800x800", "直播间封面｜800 × 800｜1:1"],
+        ["douyin-topic-bg-750x1334", "话题背景图｜750 × 1334｜约9:16"]
+      ],
+      xiaohongshu: [
+        ["xhs-cover-portrait-1080x1440", "封面·竖版｜1080 × 1440｜3:4"],
+        ["xhs-cover-square-1080x1080", "封面·方版｜1080 × 1080｜1:1"],
+        ["xhs-cover-landscape-2560x1440", "封面·横版｜2560 × 1440｜16:9"],
+        ["xhs-content-portrait-900x1200", "配图·竖版｜900 × 1200｜3:4"],
+        ["xhs-content-square-1080x1080", "配图·方版｜1080 × 1080｜1:1"],
+        ["xhs-content-landscape-1200x900", "配图·横版｜1200 × 900｜4:3"]
+      ],
+      weibo: [
+        ["weibo-article-cover-980x560", "文章封面｜980 × 560｜7:4"],
+        ["weibo-custom", "单图 / 组图 / 头图 / 活动长图｜需提供尺寸或模板"]
+      ],
+      wechat: [
+        ["wechat-article-cover-template", "文章头图｜需提供模板或像素尺寸"],
+        ["wechat-share-cover-template", "分享封面｜需提供模板或像素尺寸"],
+        ["wechat-content-image-template", "正文配图｜需提供模板或像素尺寸"],
+        ["wechat-long-image-template", "长图切片｜需提供模板或像素尺寸"]
+      ]
+    };
+
+    function selectedRadio(name) {
+      const el = document.querySelector(`input[name="${name}"]:checked`);
+      return el ? el.value : "";
+    }
+
+    function updateBrand() {
+      const isVw = $("brand").value === "volkswagen-anhui";
+      $("wulingPanel").classList.toggle("active", !isVw);
+      $("vwPanel").classList.toggle("active", isVw);
+      if (isVw) {
+        updateDssoRoute();
+      } else {
+        const style = $("wulingStyle").value;
+        const styleData = wulingStyles[style] || wulingStyles["8 高端实力大片"];
+        $("styleName").textContent = style;
+        $("styleDesc").textContent = styleData[0];
+        $("styleImage").src = styleData[1];
+      }
+      validate();
+    }
+
+    function updateDssoRoute() {
+      const route = dssoRoutes[$("dssoContentType").value] || dssoRoutes.product;
+      $("styleName").textContent = route[0];
+      $("styleDesc").textContent = route[1];
+      $("styleImage").src = route[2];
+    }
+
+    function updateSource() {
+      $("uploadWrap").hidden = selectedRadio("imageSource") !== "local";
+      validate();
+    }
+
+    function updatePlacementOptions() {
+      const routes = placementRoutes[$("platform").value] || placementRoutes.douyin;
+      const current = $("placement").value;
+      $("placement").innerHTML = routes
+        .map(([value, label]) => `<option value="${value}">${label}</option>`)
+        .join("");
+      if (routes.some(([value]) => value === current)) {
+        $("placement").value = current;
+      }
+      updatePreviewAspect();
+      validate();
+    }
+
+    function updatePreviewAspect() {
+      const selected = $("placement").selectedOptions[0];
+      const label = selected ? selected.textContent : "";
+      const ratioMatch = label.match(/(?:约)?(\d+)\s*:\s*(\d+)/);
+      const sizeMatch = label.match(/(\d{3,4})\s*[×x]\s*(\d{3,4})/i);
+      let width = 9;
+      let height = 16;
+      if (ratioMatch) {
+        width = Number(ratioMatch[1]);
+        height = Number(ratioMatch[2]);
+      } else if (sizeMatch) {
+        width = Number(sizeMatch[1]);
+        height = Number(sizeMatch[2]);
+      }
+      const normalized = Math.max(0.35, Math.min(2.4, width / height));
+      const baseWidth = normalized >= 1
+        ? Math.min(760, Math.max(520, 520 * normalized))
+        : Math.min(520, Math.max(340, 520 * normalized));
+      $("preview").style.setProperty("--preview-aspect", `${width} / ${height}`);
+      $("preview").style.setProperty("--preview-width", `min(${Math.round(baseWidth)}px, 92%)`);
+    }
+
+    function setProgress(percent, title, text) {
+      $("progressFill").style.width = `${Math.max(0, Math.min(100, percent))}%`;
+      $("progressTitle").textContent = title;
+      $("progressText").textContent = text;
+    }
+
+    function progressByWaitingTime() {
+      if (!state.startedAt) return [0, "等待生成图片", "提交任务后，生成结果会显示在这里。"];
+      const elapsed = (Date.now() - state.startedAt) / 1000;
+      if (elapsed < 8) return [12, "正在创建任务", "正在整理需求并生成任务单。"];
+      if (elapsed < 22) return [24, "正在读取品牌规则", "正在匹配品牌规范、Logo 位置和视觉风格。"];
+      if (elapsed < 45) return [40, "正在检索官方素材", "正在查找车型图片与官方参考来源。"];
+      if (elapsed < 85) return [62, "正在生成主视觉", "正在根据车型、场景和文案生成图片。"];
+      if (elapsed < 130) return [78, "正在执行视觉质检", "正在检查车型角度、Logo、车牌和画面文案。"];
+      if (elapsed < 190) return [88, "正在修正细节", "正在根据质检结果优化构图、文字和品牌元素。"];
+      return [94, "即将完成", "生成任务仍在处理，请稍等片刻。"];
+    }
+
+    function requiredMissing() {
+      const missing = [];
+      for (const [id, label] of [
+        ["platform", "平台"],
+        ["placement", "版位 / 尺寸"],
+        ["vehicle", "车型 / 颜色 / 角度"],
+        ["copy", "画面文案"]
+      ]) {
+        if (!$(id).value.trim()) missing.push(label);
+      }
+      if ($("brand").value === "wuling") {
+        if (!selectedRadio("logoOption")) missing.push("五菱 Logo 形式");
+        if (!$("wulingStyle").value) missing.push("五菱视觉风格");
+      } else {
+        if (!$("dssoContentType").value) missing.push("DSSO 内容类型");
+      }
+      if (selectedRadio("imageSource") === "local" && !$("vehicleImage").files[0]) {
+        missing.push("本地车型素材");
+      }
+      return missing;
+    }
+
+    function validate() {
+      const missing = requiredMissing();
+      $("submit").disabled = missing.length > 0;
+      $("missing").classList.toggle("active", missing.length > 0);
+      $("missing").innerHTML = missing.length
+        ? `<strong>生成前还需要补齐：</strong><ul>${missing.map((item) => `<li>${item}</li>`).join("")}</ul>`
+        : "";
+    }
+
+    function imageToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        if (!file) return resolve(null);
+        const reader = new FileReader();
+        reader.onload = () => resolve({ name: file.name, dataUrl: reader.result });
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function createJob() {
+      validate();
+      if ($("submit").disabled) return;
+      $("submit").disabled = true;
+      $("statusLine").textContent = "正在保存任务单...";
+      state.startedAt = Date.now();
+      setProgress(8, "正在创建任务", "正在整理需求并保存任务单。");
+
+      const image = await imageToDataUrl($("vehicleImage").files[0]);
+      const payload = {
+        brand: $("brand").value,
+        assetType: $("assetType").value,
+        platform: $("platform").value,
+        placement: $("placement").value,
+        vehicle: $("vehicle").value.trim(),
+        imageSource: selectedRadio("imageSource"),
+        vehicleImage: image,
+        sceneElements: $("sceneElements").value.trim(),
+        copy: $("copy").value.trim(),
+        logoOption: selectedRadio("logoOption"),
+        wulingStyle: $("wulingStyle").value,
+        dssoContentType: $("dssoContentType").value,
+        dssoStyle: dssoRoutes[$("dssoContentType").value][0]
+      };
+
+      const response = await fetch("/api/jobs", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const result = await response.json();
+      if (!result.ok) throw new Error(result.error || "创建任务失败");
+
+      state.jobId = result.jobId;
+      state.imageUrl = null;
+      $("resultImage").classList.remove("active");
+      $("placeholder").classList.remove("hidden");
+      $("promptBox").textContent = result.prompt;
+      $("statusLine").textContent = `任务已创建：${result.jobId}。Codex 正在执行生成流程。`;
+      setProgress(18, "正在启动生成流程", "任务已提交，正在交给 Codex 执行。");
+      $("copyPrompt").disabled = false;
+      $("download").disabled = true;
+      startPolling();
+      validate();
+    }
+
+    function startPolling() {
+      if (state.pollTimer) clearInterval(state.pollTimer);
+      checkStatus();
+      state.pollTimer = setInterval(checkStatus, 2500);
+    }
+
+    async function checkStatus() {
+      if (!state.jobId) return;
+      const response = await fetch(`/api/jobs/${state.jobId}/status`);
+      const status = await response.json();
+      $("statusLine").textContent = status.message || status.state;
+      if (status.imageUrl) {
+        state.imageUrl = status.imageUrl;
+        $("resultImage").src = status.imageUrl + `?t=${Date.now()}`;
+        $("resultImage").classList.add("active");
+        $("placeholder").classList.add("hidden");
+        $("download").disabled = false;
+        setProgress(100, "生成完成", "图片已生成并通过输出检测。");
+        clearInterval(state.pollTimer);
+      } else {
+        const [percent, title, text] = progressByWaitingTime();
+        setProgress(percent, title, text);
+      }
+    }
+
+    $("brand").addEventListener("change", updateBrand);
+    $("platform").addEventListener("change", updatePlacementOptions);
+    $("placement").addEventListener("change", updatePreviewAspect);
+    $("wulingStyle").addEventListener("change", updateBrand);
+    $("dssoContentType").addEventListener("change", () => {
+      updateDssoRoute();
+      validate();
+    });
+    document.querySelectorAll("input, select, textarea").forEach((el) => {
+      el.addEventListener("input", validate);
+      el.addEventListener("change", validate);
+    });
+    document.querySelectorAll('input[name="imageSource"]').forEach((el) => {
+      el.addEventListener("change", updateSource);
+    });
+    $("submit").addEventListener("click", () => {
+      createJob().catch((error) => {
+        $("statusLine").textContent = error.message;
+        validate();
+      });
+    });
+    $("copyPrompt").addEventListener("click", async () => {
+      await navigator.clipboard.writeText($("promptBox").textContent);
+      $("statusLine").textContent = "Prompt 已复制。";
+    });
+    $("download").addEventListener("click", () => {
+      if (!state.imageUrl) return;
+      const a = document.createElement("a");
+      a.href = state.imageUrl;
+      a.download = "automotive-output";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    });
+
+    updateBrand();
+    updatePlacementOptions();
+    updateSource();
+  </script>
+</body>
+</html>

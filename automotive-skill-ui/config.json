@@ -1,0 +1,12 @@
+{
+  "port": 8787,
+  "skillName": "automotive-marketing-materials",
+  "execution": {
+    "mode": "codex-cli",
+    "command": "auto",
+    "args": ["exec", "--skip-git-repo-check", "--sandbox", "workspace-write"],
+    "promptMode": "stdin"
+  },
+  "supportedBrands": ["wuling", "volkswagen-anhui"],
+  "outputFileNames": ["output.png", "output.jpg", "output.jpeg", "output.webp", "final.png", "final.jpg"]
+}
